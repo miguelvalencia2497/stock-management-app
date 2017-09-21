@@ -20,7 +20,11 @@ router.put('/items/:id', function(req, res){
 });
 
 router.delete('/items/:id', function(req, res){
-	res.send('responding');
+	Item.findByIdAndRemove({
+		_id: req.params.id
+	}).then(function(item){
+		res.send(item);
+	})
 });
 
 

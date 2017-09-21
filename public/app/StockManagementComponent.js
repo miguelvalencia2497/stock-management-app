@@ -1,5 +1,6 @@
 import React from 'react';
 import { AddItemComponent } from './AddItemComponent';
+import { ItemComponent } from './ItemComponent';
 
 export class StockManagementComponent extends React.Component{
 	constructor(props) {
@@ -9,6 +10,7 @@ export class StockManagementComponent extends React.Component{
 		}
 		this.addThis = this.addThis.bind(this);
 		this.getAll = this.getAll.bind(this);
+		this.deleteThis = this.deleteThis.bind(this);
 	}
 
 	componentWillMount() {
@@ -27,7 +29,7 @@ export class StockManagementComponent extends React.Component{
 		});
 	}
 
-	addThis(item) {
+	addThis(item){
 		var itemName = item.itemName.value;
 		var itemCategory = item.itemCategory.value;
 		var itemStocknum = item.itemStocknum.value;
@@ -49,15 +51,27 @@ export class StockManagementComponent extends React.Component{
 		});
 	}
 
+	deleteThis(item){
+		var itemId = item._id;
+		var a = this;
+		fetch(`/api/items/${itemId}`, {
+			method: 'DELETE'
+		}).then(function(){
+			a.getAll();
+		});
+
+	}
+
 	render() {
 		var items = this.state.items;
 		items = items.map(function(item, index){
 			return(
-				<li key={index}>
-					<span className="item-name">{item.itemName}</span>
-				</li>
+				<ItemComponent item={item} key={index} onDelete={this.deleteThis}/>
+				// <li key={index}>
+				// 	<span className="item-name">{item.itemName}</span>
+				// </li>
 			)
-		});
+		}.bind(this));
 
 		return(
 			<div>
